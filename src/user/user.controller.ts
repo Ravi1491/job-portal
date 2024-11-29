@@ -102,4 +102,12 @@ export class UserController {
   findOne(@CurrentUser() user: User) {
     return this.userService.findOne({ id: user.id });
   }
+
+  @Get('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('access_token', {
+      path: '/',
+      domain: 'localhost',
+    });
+  }
 }
