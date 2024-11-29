@@ -22,4 +22,11 @@ export const applicationConfig = {
     name: process.env.DB_NAME,
     port: process.env.DB_PORT,
   },
+
+  // Mailer
+  mailer: {
+    host: process.env.EMAIL_HOST,
+    username: process.env.EMAIL_USERNAME,
+    password: process.env.EMAIL_PASSWORD,
+  },
 };

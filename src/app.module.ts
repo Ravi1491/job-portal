@@ -12,6 +12,8 @@ import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { JobsModule } from './jobs/jobs.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -41,9 +43,19 @@ import { JobsModule } from './jobs/jobs.module';
       autoLoadModels: true,
       synchronize: false,
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: applicationConfig.mailer.host,
+        auth: {
+          user: applicationConfig.mailer.username,
+          pass: applicationConfig.mailer.password,
+        },
+      },
+    }),
     AuthModule,
     UserModule,
     JobsModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [

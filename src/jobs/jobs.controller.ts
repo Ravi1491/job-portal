@@ -17,12 +17,14 @@ import { UserRole } from 'src/utils/enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles';
 import { Job } from './entities/job.entity';
+import { EmailService } from 'src/common/email.service';
 
 @Controller('job')
 export class JobsController {
   constructor(
     private readonly jobsService: JobsService,
     private readonly userJobService: UserJobsService,
+    private readonly emailService: EmailService,
   ) {}
 
   @Roles(UserRole.RECRUITER)
@@ -91,7 +93,13 @@ export class JobsController {
         userId: currentUser.id,
       });
 
-      // Send Email to candidate and recuriter
+      // Send Email to candidate
+      await this.emailService.sendMail(
+        `You have successfully applied for the job: ${job.title}`,
+        'sqaure@gmail.com',
+        job.title,
+        currentUser.email,
+      );
 
       return 'Job Applied Successfully';
     } catch (error) {
