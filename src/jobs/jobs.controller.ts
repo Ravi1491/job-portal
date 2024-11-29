@@ -126,4 +126,15 @@ export class JobsController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @Roles(UserRole.CANDIDATE)
+  @UseGuards(RolesGuard)
+  @Get('/all')
+  async getAllJobs() {
+    try {
+      return this.jobsService.findAll();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
