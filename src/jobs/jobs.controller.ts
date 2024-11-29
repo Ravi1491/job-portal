@@ -73,7 +73,12 @@ export class JobsController {
         throw new Error('Only Candidate can apply');
       }
 
-      const job = await this.jobsService.findOne({ id: payload.jobId });
+      const job = await this.jobsService.findOne(
+        { id: payload.jobId },
+        {
+          include: [{ model: User }],
+        },
+      );
 
       if (!job) {
         throw new Error('Job not found');
@@ -94,12 +99,19 @@ export class JobsController {
       });
 
       // Send Email to candidate
-      await this.emailService.sendMail(
-        `You have successfully applied for the job: ${job.title}`,
-        'sqaure@gmail.com',
-        job.title,
-        currentUser.email,
-      );
+      await this.emailService.sendMailToCandidate({
+        body: `You have successfully applied for ${job.title}`,
+        candidateEmail: currentUser.email,
+        jobTitle: job.title,
+        recruiterEmail: job.user.email,
+      });
+
+      // Send Email to recuriter
+      await this.emailService.sendMailToRecruiter({
+        body: `You have received a new application for ${job.title}. Please check your dashboard`,
+        recruiterEmail: job.user.email,
+        jobTitle: job.title,
+      });
 
       return 'Job Applied Successfully';
     } catch (error) {

@@ -1,8 +1,10 @@
 import {
+  BelongsTo,
   Column,
   CreatedAt,
   DataType,
   DeletedAt,
+  ForeignKey,
   HasMany,
   Model,
   PrimaryKey,
@@ -10,6 +12,7 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { UserJob } from './user-job.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Table({
   underscored: true,
@@ -28,6 +31,7 @@ export class Job extends Model<Job> {
   @Column({ allowNull: false })
   description: string;
 
+  @ForeignKey(() => User)
   @Column({ allowNull: false })
   recruiterId: string;
 
@@ -42,4 +46,7 @@ export class Job extends Model<Job> {
 
   @HasMany(() => UserJob)
   userJobs: UserJob[];
+
+  @BelongsTo(() => User, 'recruiterId')
+  user: User;
 }
